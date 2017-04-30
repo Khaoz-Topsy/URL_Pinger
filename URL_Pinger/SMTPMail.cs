@@ -19,8 +19,8 @@ namespace URL_Pinger
                 {
                     Thread.CurrentThread.IsBackground = true;
 
-                    string Email = SecretData.ToEmailAddress;
-                    string SenderEmail = SecretData.FromEmailAddress;
+                    string ToEmail = SecretData.ToEmailAddress;
+                    string FromEmail = SecretData.FromEmailAddress;
                     string Password = SecretData.Password;
 
                     var smtp = new SmtpClient
@@ -29,11 +29,11 @@ namespace URL_Pinger
                         Port = 587,
                         EnableSsl = true,
                         DeliveryMethod = SmtpDeliveryMethod.Network,
-                        UseDefaultCredentials = false,
-                        Credentials = new NetworkCredential(SenderEmail, Password)
+                        UseDefaultCredentials = true,
+                        Credentials = new NetworkCredential(FromEmail, Password)
                     };
 
-                    using (var message = new MailMessage(SenderEmail, Email) { Subject = Subject, Body = Message })
+                    using (var message = new MailMessage(FromEmail, ToEmail, Subject, Message))
                     {
                         smtp.Send(message);
                     }
