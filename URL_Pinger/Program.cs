@@ -23,25 +23,38 @@ namespace URL_Pinger
             do
             {
                 System.Threading.Thread.Sleep(refreshRate);
-                refreshRate = 30000;
+                refreshRate = 60000;
 
-                Ping pingSender = new Ping();
-                PingReply reply = pingSender.Send(URL);
-                if (reply.Status == IPStatus.Success)
+                try
                 {
-                    SMTPMail.Send("URL is Responding", URL + " is Responding " + DateTime.Now);
+                    Ping pingSender = new Ping();
+                    PingReply reply = pingSender.Send(URL);
+                    if (reply.Status == IPStatus.Success)
+                    {
+                        SMTPMail.Send("URL is Responding", URL + " is Responding " + DateTime.Now);
 
-                    goodResponse = true;
+                        goodResponse = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine(
+                            "Status: {0} | {1}",
+                            reply.Status.ToString(),
+                            DateTime.Now.ToString("HH:mm:ss"));
+                    }
                 }
-                else
+                catch (Exception)
                 {
                     Console.WriteLine(
-                        "Status: {0} | {1}", 
-                        reply.Status.ToString(), 
+                        "Status: {0} | {1}",
+                        "Error",
                         DateTime.Now.ToString("HH:mm:ss"));
                 }
 
+
             } while (!goodResponse);
+
+            //Console.ReadLine();
         }
     }
 }
